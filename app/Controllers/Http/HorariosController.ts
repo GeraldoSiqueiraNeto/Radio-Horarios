@@ -15,24 +15,30 @@ export default class HorariosController {
     return Horario.all()
   }
 
-  public async store({ request }: HttpContextContract) {
-    const newScheduleSchema = schema.create({
-      programa_id: schema.number([rules.exists({ table: 'programas', column: 'id' })]),
-      horario: schema.string({}, [
-        rules.regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-        rules.unique({
-          table: 'horarios',
-          column: 'horario',
-          where: { programa_id: request.input('programa_id') },
-        }),
-      ]),
-    })
+  public async store({ request, response }: HttpContextContract) {
+    try {
+      const validateSchedule = schema.create({
+        programa_id: schema.number([rules.exists({ table: 'programas', column: 'id' })]),
+        horario: schema.string({}, [
+          rules.regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
+          rules.unique({ table: 'horarios', column: 'horario' }),
+        ]),
+      })
 
-    const validatedData = await request.validate({ schema: newScheduleSchema })
+      const validatedData = await request.validate({ schema: validateSchedule })
 
-    const horario = await Horario.create(validatedData)
+      const Schedule = await Horario.create(validatedData)
 
-    return horario
+      return Schedule
+    } catch (error) {
+      if (
+        error.code === 'E_VALIDATION_FAILURE' &&
+        error.messages.errors.some((e) => e.rule === 'unique')
+      ) {
+        return response.status(400).send({ message: 'Horário já ocupado' })
+      }
+      throw error
+    }
   }
 
   public async show({ params }: HttpContextContract) {
