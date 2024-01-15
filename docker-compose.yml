@@ -11,4 +11,4 @@ services:
       MYSQL_ROOT_PASSWORD: 'secret'
       MYSQL_DATABASE: 'radio'
     ports:
-      - "3306:3306"
+      - '3306:3306'
