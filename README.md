@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 # radio_schedules
 
 ## Build Setup
@@ -20,3 +22,7 @@ $ npm run dev
 # build for production and launch server
 $ npm run build
 $ npm run start
+=======
+# Radio-Horarios
+>>>>>>> 5109e01d69430cb466051c4749539b6addaf158a
+```

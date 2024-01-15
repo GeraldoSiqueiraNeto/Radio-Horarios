@@ -6,11 +6,15 @@ export default class ProgramasController {
     const programName = request.input('nome')
 
     if (programName) {
-      const programs = await Programa.query().where('nome', 'like', `%${programName}%`)
+      const programs = await Programa.query()
+        .where('nome', 'like', `%${programName}%`)
+        .preload('horarios')
+        .exec()
       return programs
     }
 
-    return Programa.all()
+    const programs = await Programa.query().preload('horarios').exec()
+    return programs
   }
 
   public async store({ request }: HttpContextContract) {

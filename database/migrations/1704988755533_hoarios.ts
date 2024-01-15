@@ -6,7 +6,13 @@ export default class Hoarios extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('programa_id').unsigned().references('id').inTable('programas')
+      table
+        .integer('programa_id')
+        .unsigned()
+        .references('id')
+        .inTable('programas')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
       table.string('horario').notNullable()
     })
   }
